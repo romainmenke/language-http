@@ -5,10 +5,10 @@
   'HTTP'
   'Http'
 ]
-'firstLineMatch': '^HTTP/'
+'firstLineMatch': '(^HTTP/)|(^[A-Z]+ .*? HTTP/\\d+(\\.\\d+)*)'
 'patterns': [
   {
-    'name': 'source.http'
+    'name': 'source.response.http'
     'begin': '^(HTTP/\\d+(\\.\\d+)*) (\\d{3}) (.+?)\\n'
     'beginCaptures':
       1:
@@ -22,16 +22,39 @@
     'end': '(?=\\n)'
     'patterns': [
       {
-        'match': '^(\\S+?)(\\s?:\\s?)(.*)\\n'
-        'name': 'source.http'
-        'captures':
-          1:
-            'name': 'variable.other.http'
-          2:
-            'name': 'punctuation.definition.block.http'
-          3:
-            'name': 'entity.name.http'
+        'include': '#header'
+      }
+    ]
+  }
+  {
+    'name': 'source.request.http'
+    'begin': '^([A-Z]+) (.*?) (HTTP/\\d+(\\.\\d+)*)\\n'
+    'beginCaptures':
+      1:
+        'name': 'keyword.control.http'
+      2:
+        'name': 'entity.name.function.http'
+      3:
+        'name': 'entity.name.type.http'
+      4:
+        'name': 'entity.name.type.http'
+    'end': '(?=\\n)'
+    'patterns': [
+      {
+        'include': '#header'
       }
     ]
   }
 ]
+repository:
+  header: {
+    'match': '^(\\S+?)(\\s?:\\s?)(.*)\\n'
+    'name': 'source.header.http'
+    'captures':
+      1:
+        'name': 'variable.other.http'
+      2:
+        'name': 'punctuation.definition.block.http'
+      3:
+        'name': 'entity.name.http'
+  }
